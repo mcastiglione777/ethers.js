@@ -172,6 +172,9 @@ export class EtherscanProvider extends BaseProvider{
             case "goerli":
                 baseUrl = "https://api-goerli.etherscan.io";
                 break;
+            case "smartchain":
+                baseUrl = "https://api.bscscan.com";
+                break;
             default:
                 throw new Error("unsupported network");
         }
@@ -394,8 +397,12 @@ export class EtherscanProvider extends BaseProvider{
             }
 
             case "getEtherPrice":
-                if (this.network.name !== "homestead") { return 0.0; }
-                url += "?module=stats&action=ethprice";
+                if (this.network.name !== "homestead" && this.network.name !== "smartchain") { return 0.0; }
+                if (this.network.name == "smartchain") {
+                    url += "?module=stats&action=bnbprice"; 
+                } else {
+                    url += "?module=stats&action=ethprice"; 
+                }
                 url += apiKey;
                 return parseFloat((await get(url, null, getResult)).ethusd);
 
